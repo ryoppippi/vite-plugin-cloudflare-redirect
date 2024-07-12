@@ -2,6 +2,9 @@
 
 Vite plugin to handle Cloudflare's \_redirects file following https://developers.cloudflare.com/pages/platform/redirects/.
 
+[![JSR](https://jsr.io/badges/@ryoppippi/vite-plugin-cloudflare-redirect)](https://jsr.io/@ryoppippi/vite-plugin-cloudflare-redirect)
+[![JSR](https://jsr.io/badges/@ryoppippi/vite-plugin-cloudflare-redirect/score)](https://jsr.io/@ryoppippi/vite-plugin-cloudflare-redirect)
+
 ## Usage
 
 ### parse mode
