@@ -1,6 +1,17 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { createRedirect } from 'cloudflare-redirect-parser'
+import type { Plugin } from 'vite'
+
+export interface Options {
+  /**
+   * The _redirects file to read. Defaults to _redirects in `publicDir` if exists,
+   * else the plugin would not run any redirects.
+   */
+  redirectsFile?: string
+}
+
+export declare function cloudflareRedirect(options?: Options): Plugin
 
 /** @type {import('./index').cloudflareRedirect} */
 export function cloudflareRedirect(options) {
