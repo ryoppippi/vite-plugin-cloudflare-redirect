@@ -8,7 +8,7 @@ Vite plugin to handle Cloudflare's \_redirects file following https://developers
 ## Usage
 
 ### parse mode
-Create a `_redirects` file at `/public` (or following the `publicDir` config):
+Parse a `_redirects` file at `/public` (or following the `publicDir` config) like this:
 
 ```ini
 # /public/_redirects
@@ -33,6 +33,8 @@ export default defineConfig({
 By default if no options are passed, the plugin would try to load from `/public/_redirects` (from `publicDir` config). If the file isn't found, no redirects will happen. Pass the `redirectsFile` option to specify a custom path.
 
 ### generate mode
+
+Generate a `_redirects` file to `/public` (or following the `publicDir` config) from the `entries` option.
 
 ```ts
 // vite.config.ts
