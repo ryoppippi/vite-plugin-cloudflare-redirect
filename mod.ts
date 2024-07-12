@@ -1,64 +1,103 @@
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import { createRedirect } from 'cloudflare-redirect-parser'
-import type { Plugin } from 'vite'
+import fs from "node:fs/promises";
+import path from "node:path";
+import { defu } from "defu";
+import { createRedirect, type RedirectEntry } from "cloudflare-redirect-parser";
+import type { Plugin, ViteDevServer } from "vite";
 
+/**
+ * options
+ */
 export interface Options {
-  /**
-   * The _redirects file to read. Defaults to _redirects in `publicDir` if exists,
-   * else the plugin would not run any redirects.
-   */
-  redirectsFile?: string
+  /** whether to generate `_redirects` file */
+  mode?: "generate" | "parse";
+
+  /** path to the `_redirects` file */
+  redirectsFilePath?: string;
+
+  /** path to the `_redirects` file */
+  entries?: RedirectEntry[];
 }
 
-export declare function cloudflareRedirect(options?: Options): Plugin
+const DEFAULT_OPTIONS = ({
+  mode: "generate",
+  entries: [],
+}) as const satisfies Options;
 
-/** @type {import('./index').cloudflareRedirect} */
-export function cloudflareRedirect(options) {
-  /** @type {import('vite').ViteDevServer['middlewares']['handle']} */
-  let middleware
+type Middleware = ViteDevServer["middlewares"]["handle"];
+
+/**
+ * generat `_redirects` file content from entries
+ */
+function generateRedirect(entries: RedirectEntry[]) {
+  let content = "";
+
+  for (const entry of entries) {
+    const { from, to, status = 301 } = entry;
+    content += `${encodeURI(from)} ${encodeURI(to)} ${status}\n`;
+  }
+
+  return content;
+}
+
+export function cloudflareRedirect(options: Options = {}): Plugin {
+  let middleware: Middleware;
+
   return {
-    name: 'vite-plugin-cloudflare-redirect',
+    name: "vite-plugin-cloudflare-redirect",
+
     async configResolved(config) {
-      /** @type {string} */
-      let content
-      if (options?.redirectsFile) {
-        content = await fs.readFile(
-          path.resolve(options.redirectsFile),
-          'utf-8'
-        )
-      } else {
-        try {
-          content = await fs.readFile(
-            path.resolve(config.publicDir, '_redirects'),
-            'utf-8'
-          )
-        } catch {}
+      const resolvedOptions = defu(options, DEFAULT_OPTIONS);
+
+      /* resolve redirects file path */
+      const redirectFilePath = resolvedOptions.redirectsFilePath != null
+        ? path.resolve(resolvedOptions.redirectsFilePath)
+        : path.resolve(config.publicDir, "_redirects");
+
+      /* parse or generate content */
+      let content: string;
+      switch (resolvedOptions.mode) {
+        case "generate":
+          content = generateRedirect(resolvedOptions.entries);
+          break;
+        case "parse":
+          content = await fs.readFile(redirectFilePath, "utf-8");
+          break;
+        default:
+          return resolvedOptions.mode satisfies never;
       }
-      if (content) {
-        const redirect = createRedirect(content)
-        middleware = (req, res, next) => {
-          if (req.url) {
-            const redirected = redirect(req.url)
-            if (redirected) {
-              res.writeHead(redirected.status, { location: redirected.to })
-              res.end()
-              return
-            }
+
+      /* if content is empty, return */
+      if (content === "") return;
+
+      /* if mode is generate, write to file */
+      if (resolvedOptions.mode === "generate") {
+        await fs.writeFile(redirectFilePath, content);
+      }
+
+      const redirect = createRedirect(content);
+
+      middleware = (req, res, next) => {
+        if (req.url) {
+          const redirected = redirect(req.url);
+          if (redirected) {
+            res.writeHead(redirected.status, { location: redirected.to });
+            res.end();
+            return;
           }
-          next()
+          next();
         }
-      }
+      };
     },
+
     configureServer(server) {
-      if (middleware) {
-        server.middlewares.use(middleware)
+      if (middleware != null) {
+        server.middlewares.use(middleware);
       }
     },
     configurePreviewServer(server) {
-      if (middleware) {
-        server.middlewares.use(middleware)
+      if (middleware != null) {
+        server.middlewares.use(middleware);
       }
-    }
-  }
+    },
+  };
 }
