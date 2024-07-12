@@ -4,17 +4,7 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - '**.ts'
-      - '.github/workflows/test.yml'
-      - 'deno.jsonc'
   pull_request:
-    branches:
-      - main
-    paths:
-      - '**.ts'
 
 permissions:
   contents: read
