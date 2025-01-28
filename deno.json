@@ -8,9 +8,9 @@
     "lint": "deno lint ./**/*.ts"
   },
   "imports": {
-    "cloudflare-redirect-parser": "npm:cloudflare-redirect-parser@^0.1.0",
+    "cloudflare-redirect-parser": "npm:cloudflare-redirect-parser@^1.0.0",
     "defu": "npm:defu@^6.1.4",
-    "vite": "npm:vite@^5.4.2"
+    "vite": "npm:vite@^6.0.0"
   },
   "keywords": [
     "vite",
