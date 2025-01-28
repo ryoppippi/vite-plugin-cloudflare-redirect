@@ -26,7 +26,7 @@ const DEFAULT_OPTIONS = ({
 type Middleware = ViteDevServer["middlewares"]["handle"];
 
 /**
- * generat `_redirects` file content from entries
+ * generate `_redirects` file content from entries
  */
 function generateRedirect(entries: RedirectEntry[]) {
   let content = "";
