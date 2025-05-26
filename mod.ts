@@ -92,8 +92,6 @@ export function cloudflareRedirect(options: Options = {}): Plugin {
     configureServer(server) {
       if (middleware != null) {
         server.middlewares.use(middleware);
-        server.middlewares.use((req,res,next))=>{
-        })
       }
     },
     configurePreviewServer(server) {
