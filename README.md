@@ -24,7 +24,7 @@ export default defineConfig({
     plugins: [
         cloudflareRedirect({
             mode: "parse",
-            redirectsFile: './custom/_redirects' // optional
+            redirectsFilePath: './custom/_redirects' // optional. If not specified, this plugin parses the default public or static directory from vite config.
         })
     ]
 })
@@ -45,7 +45,7 @@ export default defineConfig({
     plugins: [
         cloudflareRedirect({
             mode: "generate",
-            redirectsFile: './public/_redirects', // optional
+            redirectsFilePath: './public/_redirects', // optional
             entries: [
                 { from: '/foo', to: 'https://example.com', status: 302 },
                 // ...

@@ -11,7 +11,10 @@ export interface Options {
   /** whether to generate `_redirects` file */
   mode?: "generate" | "parse";
 
-  /** path to the `_redirects` file */
+  /**
+   * path to the `_redirects` file
+   * if not specified, this plugin parses the default public or static directory from vite config.
+   */
   redirectsFilePath?: string;
 
   /** path to the `_redirects` file */
