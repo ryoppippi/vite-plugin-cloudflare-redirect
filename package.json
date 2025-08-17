@@ -37,7 +37,7 @@
 		"prepack": "bun run build && bun clean-pkg-json -r scripts.preinstall",
 		"prepare": "git config --local core.hooksPath .githooks",
 		"publish:jsr": "bunx pkg-to-jsr && bunx jsr publish",
-		"release": "bun lint && bun typecheck && bun build && bumpp",
+		"release": "bun lint && bun typecheck && bun run build && bumpp",
 		"typecheck": "tsgo --noEmit"
 	},
 	"peerDependencies": {
