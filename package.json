@@ -30,7 +30,7 @@
 		"format:check": "prettier --check .",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"prepare": "simple-git-hooks",
+		"prepare": "git config --local core.hooksPath .githooks",
 		"publish:jsr": "bunx pkg-to-jsr && bunx jsr publish",
 		"typecheck": "tsgo --noEmit"
 	},
@@ -50,11 +50,7 @@
 		"eslint-plugin-format": "^1.0.1",
 		"lint-staged": "^15.0.0",
 		"prettier": "^3.0.0",
-		"simple-git-hooks": "^2.0.0",
 		"sort-package-json": "^2.0.0"
-	},
-	"simple-git-hooks": {
-		"pre-commit": "bunx lint-staged"
 	},
 	"lint-staged": {
 		"*": [
