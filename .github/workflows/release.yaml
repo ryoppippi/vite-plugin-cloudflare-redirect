@@ -1,46 +1,47 @@
-name: release
-
-env:
-  DENO_VERSION: 2.x
+name: Release
 
 on:
   push:
     tags:
       - '*'
 
-permissions:
-  contents: write
-
 jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          registry-url: 'https://registry.npmjs.org'
+          node-version: lts/*
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Publish to npm
+        run: npm publish --provenance --no-git-checks --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
   jsr:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          fetch-depth: 0
-      - uses: denoland/setup-deno@11b63cf76cfcafb4e43f97b6cad24d8e8438f62d # v1.5.2
-        with:
-          deno-version: ${{ env.DENO_VERSION }}
-      - name: Publish
-        run: |
-          deno run -A jsr:@david/publish-on-tag@0.1.3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  release:
-    needs:
-      - jsr
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          fetch-depth: 0
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
-      - uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5 # v2.0.1
-        with:
-          bun-version: latest
-
-      - run: bunx changelogithub
+      - name: Publish to JSR
+        run: bunx pkg-to-jsr && bunx jsr publish
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          JSR_TOKEN: ${{ secrets.JSR_TOKEN }}
