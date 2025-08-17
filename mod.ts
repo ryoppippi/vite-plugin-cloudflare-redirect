@@ -22,13 +22,12 @@ export type Options = {
 	entries?: RedirectEntry[];
 };
 
-const DEFAULT_OPTIONS = ({
+const DEFAULT_OPTIONS = {
 	mode: 'generate',
 	entries: [],
-}) as const satisfies Options;
+} as const satisfies Options;
 
 type Middleware = ViteDevServer['middlewares']['handle'];
-type NextFunction = () => void;
 
 /**
  * generate `_redirects` file content from entries
@@ -54,9 +53,10 @@ export function cloudflareRedirect(options: Options = {}): Plugin {
 			const resolvedOptions = defu(options, DEFAULT_OPTIONS);
 
 			/* resolve redirects file path */
-			const redirectFilePath = resolvedOptions.redirectsFilePath != null
-				? path.resolve(resolvedOptions.redirectsFilePath)
-				: path.resolve(config.publicDir, '_redirects');
+			const redirectFilePath
+				= resolvedOptions.redirectsFilePath != null
+					? path.resolve(resolvedOptions.redirectsFilePath)
+					: path.resolve(config.publicDir, '_redirects');
 
 			/* parse or generate content */
 			let content: string;
@@ -83,7 +83,7 @@ export function cloudflareRedirect(options: Options = {}): Plugin {
 
 			const redirect = createRedirect(content);
 
-			middleware = (req, res, next: NextFunction) => {
+			middleware = (req, res, next) => {
 				if (req.url != null) {
 					const redirected = redirect(req.url);
 					if (redirected != null) {
@@ -91,9 +91,8 @@ export function cloudflareRedirect(options: Options = {}): Plugin {
 						res.end();
 						return;
 					}
-					if (next != null) {
-						next();
-					}
+					// eslint-disable-next-line ts/no-unsafe-call
+					next?.();
 				}
 			};
 		},
