@@ -5,6 +5,14 @@
 	"description": "Vite plugin for Cloudflare redirects",
 	"author": "ryoppippi",
 	"license": "MIT",
+	"funding": "https://github.com/ryoppippi/vite-plugin-cloudflare-redirect?sponsor=1",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ryoppippi/vite-plugin-cloudflare-redirect.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ryoppippi/vite-plugin-cloudflare-redirect/issues"
+	},
 	"keywords": [
 		"vite",
 		"vite-plugin",
