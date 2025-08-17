@@ -29,8 +29,6 @@ jobs:
 
       - name: Publish to npm
         run: npm publish --provenance --no-git-checks --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   jsr:
     runs-on: ubuntu-latest
@@ -45,3 +43,20 @@ jobs:
         run: bunx pkg-to-jsr && bunx jsr publish
         env:
           JSR_TOKEN: ${{ secrets.JSR_TOKEN }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [npm, jsr]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Generate changelog
+        run: bun x changelogithub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
