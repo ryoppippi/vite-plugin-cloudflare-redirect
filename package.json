@@ -25,7 +25,7 @@
 		"mod.ts"
 	],
 	"scripts": {
-		"build": "tsdown mod.ts",
+		"build": "tsdown mod.ts --dts --sourcemap --outDir dist",
 		"check": "bun run typecheck",
 		"dev": "bun test --watch mod.ts",
 		"format": "eslint . --fix",
