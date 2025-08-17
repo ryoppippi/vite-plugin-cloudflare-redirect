@@ -26,12 +26,10 @@
 	],
 	"scripts": {
 		"build": "tsdown mod.ts",
-		"check": "bun run typecheck && bun run format:check",
+		"check": "bun run typecheck",
 		"dev": "bun test --watch mod.ts",
-		"format": "prettier --write .",
-		"format:check": "prettier --check .",
+		"format": "eslint . --fix",
 		"lint": "eslint .",
-		"lint:fix": "eslint . --fix",
 		"prepare": "git config --local core.hooksPath .githooks",
 		"publish:jsr": "bunx pkg-to-jsr && bunx jsr publish",
 		"release": "bun lint && bun typecheck && bun build && bumpp",
@@ -53,7 +51,6 @@
 		"eslint": "^9.33.0",
 		"eslint-plugin-format": "^1.0.1",
 		"lint-staged": "^15.0.0",
-		"prettier": "^3.0.0",
 		"sort-package-json": "^2.0.0",
 		"tsdown": "^0.14.1"
 	},
