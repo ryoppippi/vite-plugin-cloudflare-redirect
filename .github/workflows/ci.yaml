@@ -1,49 +1,33 @@
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-
 name: CI
 
 on:
   push:
   pull_request:
 
-permissions:
-  contents: read
-
-env:
-  DENO_VERSION: 2.x
-
 jobs:
-  ci:
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup repo
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup Deno
-        uses: denoland/setup-deno@11b63cf76cfcafb4e43f97b6cad24d8e8438f62d # v1.5.2
-        with:
-          deno-version: ${{ env.DENO_VERSION }}
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
-      - name: Check
-        run: deno task check
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
-      - name: Run linter
-        run: deno task lint
+      - name: Lint
+        run: bun lint
 
-  jsr-publish-dry-run:
+      - name: Type check
+        run: bun typecheck
+
+  spell-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: denoland/setup-deno@11b63cf76cfcafb4e43f97b6cad24d8e8438f62d # v1.5.2
-        with:
-          deno-version: ${{ env.DENO_VERSION }}
-      - run: deno publish --dry-run
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  action-timeline:
-    needs:
-      - ci
-      - jsr-publish-dry-run
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: Kesin11/actions-timeline@427ee2cf860166e404d0d69b4f2b24012bb7af4f # v2.2.3
+      - name: Spell Check
+        uses: crate-ci/typos@master

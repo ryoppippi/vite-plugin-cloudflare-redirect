@@ -1,0 +1,69 @@
+{
+	"name": "@ryoppippi/vite-plugin-cloudflare-redirect",
+	"type": "module",
+	"version": "0.0.0",
+	"description": "Vite plugin for Cloudflare redirects",
+	"author": "ryoppippi",
+	"license": "MIT",
+	"keywords": [
+		"vite",
+		"vite-plugin",
+		"cloudflare",
+		"redirect"
+	],
+	"exports": {
+		".": {
+			"jsr": "./mod.ts",
+			"types": "./mod.ts",
+			"import": "./mod.ts"
+		}
+	},
+	"main": "./mod.ts",
+	"types": "./mod.ts",
+	"files": [
+		"dist",
+		"mod.ts"
+	],
+	"scripts": {
+		"build": "tsdown mod.ts --dts --sourcemap --outDir dist",
+		"check": "bun run typecheck",
+		"dev": "bun test --watch mod.ts",
+		"format": "eslint . --fix",
+		"preinstall": "npx only-allow bun",
+		"lint": "eslint .",
+		"prepack": "bun run build && bun clean-pkg-json -r scripts.preinstall",
+		"prepare": "git config --local core.hooksPath .githooks",
+		"publish:jsr": "bunx pkg-to-jsr && bunx jsr publish",
+		"release": "bun lint && bun typecheck && bun build && bumpp",
+		"typecheck": "tsgo --noEmit"
+	},
+	"peerDependencies": {
+		"vite": "^5.0.0 || ^6.0.0 || ^7.0.0"
+	},
+	"dependencies": {
+		"cloudflare-redirect-parser": "^1.0.0",
+		"defu": "^6.1.4"
+	},
+	"devDependencies": {
+		"@ryoppippi/eslint-config": "^0.3.7",
+		"@types/bun": "^1.2.20",
+		"@types/node": "^22.0.0",
+		"@typescript/native-preview": "^7.0.0-dev.20250814.1",
+		"bumpp": "^9.0.0",
+		"clean-pkg-json": "^1.2.0",
+		"eslint": "^9.33.0",
+		"eslint-plugin-format": "^1.0.1",
+		"lint-staged": "^15.0.0",
+		"sort-package-json": "^2.0.0",
+		"tsdown": "^0.14.1",
+		"vite": "^6.0.0"
+	},
+	"lint-staged": {
+		"*": [
+			"eslint --cache --fix"
+		],
+		"package.json": [
+			"sort-package-json"
+		]
+	}
+}
