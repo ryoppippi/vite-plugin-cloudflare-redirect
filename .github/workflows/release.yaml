@@ -46,9 +46,7 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Publish to JSR
-        run: bunx pkg-to-jsr && bunx jsr publish
-        env:
-          JSR_TOKEN: ${{ secrets.JSR_TOKEN }}
+        run: bunx pkg-to-jsr && bunx jsr publish --allow-dirty
 
   release:
     runs-on: ubuntu-latest
