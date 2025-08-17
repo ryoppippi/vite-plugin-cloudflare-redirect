@@ -1,7 +1,7 @@
 {
 	"name": "@ryoppippi/vite-plugin-cloudflare-redirect",
 	"type": "module",
-	"version": "0.0.0",
+	"version": "1.1.1",
 	"description": "Vite plugin for Cloudflare redirects",
 	"author": "ryoppippi",
 	"license": "MIT",
