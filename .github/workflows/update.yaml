@@ -4,7 +4,7 @@ name: Deno Update
 
 on:
   schedule:
-    - cron: "0 9 * * *"
+    - cron: '0 9 * * *'
   workflow_dispatch: {}
 
 env:
@@ -44,7 +44,7 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
         with:
-          commit-message: "chore(deps): Update deno dependencies"
+          commit-message: 'chore(deps): Update deno dependencies'
           title: Update Deno dependencies
           body: |-
             Some external modules are stale.

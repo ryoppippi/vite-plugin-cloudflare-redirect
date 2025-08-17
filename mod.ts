@@ -1,106 +1,112 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import { defu } from "defu";
-import { createRedirect, type RedirectEntry } from "cloudflare-redirect-parser";
-import type { Plugin, ViteDevServer } from "vite";
+import type { RedirectEntry } from 'cloudflare-redirect-parser';
+import type { Plugin, ViteDevServer } from 'vite';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { createRedirect } from 'cloudflare-redirect-parser';
+import { defu } from 'defu';
 
 /**
  * options
  */
-export interface Options {
-  /** whether to generate `_redirects` file */
-  mode?: "generate" | "parse";
+export type Options = {
+	/** whether to generate `_redirects` file */
+	mode?: 'generate' | 'parse';
 
-  /**
-   * path to the `_redirects` file
-   * if not specified, this plugin parses the default public or static directory from vite config.
-   */
-  redirectsFilePath?: string;
+	/**
+	 * path to the `_redirects` file
+	 * if not specified, this plugin parses the default public or static directory from vite config.
+	 */
+	redirectsFilePath?: string;
 
-  /** path to the `_redirects` file */
-  entries?: RedirectEntry[];
-}
+	/** path to the `_redirects` file */
+	entries?: RedirectEntry[];
+};
 
 const DEFAULT_OPTIONS = ({
-  mode: "generate",
-  entries: [],
+	mode: 'generate',
+	entries: [],
 }) as const satisfies Options;
 
-type Middleware = ViteDevServer["middlewares"]["handle"];
+type Middleware = ViteDevServer['middlewares']['handle'];
+type NextFunction = () => void;
 
 /**
  * generate `_redirects` file content from entries
  */
-function generateRedirect(entries: RedirectEntry[]) {
-  let content = "";
+function generateRedirect(entries: RedirectEntry[]): string {
+	let content = '';
 
-  for (const entry of entries) {
-    const { from, to, status = 301 } = entry;
-    content += `${encodeURI(from)} ${encodeURI(to)} ${status}\n`;
-  }
+	for (const entry of entries) {
+		const { from, to, status = 301 } = entry;
+		content += `${encodeURI(from)} ${encodeURI(to)} ${status}\n`;
+	}
 
-  return content;
+	return content;
 }
 
 export function cloudflareRedirect(options: Options = {}): Plugin {
-  let middleware: Middleware;
+	let middleware: Middleware;
 
-  return {
-    name: "vite-plugin-cloudflare-redirect",
+	return {
+		name: 'vite-plugin-cloudflare-redirect',
 
-    async configResolved(config) {
-      const resolvedOptions = defu(options, DEFAULT_OPTIONS);
+		async configResolved(config) {
+			const resolvedOptions = defu(options, DEFAULT_OPTIONS);
 
-      /* resolve redirects file path */
-      const redirectFilePath = resolvedOptions.redirectsFilePath != null
-        ? path.resolve(resolvedOptions.redirectsFilePath)
-        : path.resolve(config.publicDir, "_redirects");
+			/* resolve redirects file path */
+			const redirectFilePath = resolvedOptions.redirectsFilePath != null
+				? path.resolve(resolvedOptions.redirectsFilePath)
+				: path.resolve(config.publicDir, '_redirects');
 
-      /* parse or generate content */
-      let content: string;
-      switch (resolvedOptions.mode) {
-        case "generate":
-          content = generateRedirect(resolvedOptions.entries);
-          break;
-        case "parse":
-          content = await fs.readFile(redirectFilePath, "utf-8");
-          break;
-        default:
-          return resolvedOptions.mode satisfies never;
-      }
+			/* parse or generate content */
+			let content: string;
+			switch (resolvedOptions.mode) {
+				case 'generate':
+					content = generateRedirect(resolvedOptions.entries);
+					break;
+				case 'parse':
+					content = await fs.readFile(redirectFilePath, 'utf-8');
+					break;
+				default:
+					return resolvedOptions.mode satisfies never;
+			}
 
-      /* if content is empty, return */
-      if (content === "") return;
+			/* if content is empty, return */
+			if (content === '') {
+				return;
+			}
 
-      /* if mode is generate, write to file */
-      if (resolvedOptions.mode === "generate") {
-        await fs.writeFile(redirectFilePath, content);
-      }
+			/* if mode is generate, write to file */
+			if (resolvedOptions.mode === 'generate') {
+				await fs.writeFile(redirectFilePath, content);
+			}
 
-      const redirect = createRedirect(content);
+			const redirect = createRedirect(content);
 
-      middleware = (req, res, next) => {
-        if (req.url) {
-          const redirected = redirect(req.url);
-          if (redirected) {
-            res.writeHead(redirected.status, { location: redirected.to });
-            res.end();
-            return;
-          }
-          next();
-        }
-      };
-    },
+			middleware = (req, res, next: NextFunction) => {
+				if (req.url != null) {
+					const redirected = redirect(req.url);
+					if (redirected != null) {
+						res.writeHead(redirected.status, { location: redirected.to });
+						res.end();
+						return;
+					}
+					if (next != null) {
+						next();
+					}
+				}
+			};
+		},
 
-    configureServer(server) {
-      if (middleware != null) {
-        server.middlewares.use(middleware);
-      }
-    },
-    configurePreviewServer(server) {
-      if (middleware != null) {
-        server.middlewares.use(middleware);
-      }
-    },
-  };
+		configureServer(server) {
+			if (middleware != null) {
+				server.middlewares.use(middleware);
+			}
+		},
+		configurePreviewServer(server) {
+			if (middleware != null) {
+				server.middlewares.use(middleware);
+			}
+		},
+	};
 }
