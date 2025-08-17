@@ -29,7 +29,9 @@
 		"check": "bun run typecheck",
 		"dev": "bun test --watch mod.ts",
 		"format": "eslint . --fix",
+		"preinstall": "npx only-allow bun",
 		"lint": "eslint .",
+		"prepack": "bun run build",
 		"prepare": "git config --local core.hooksPath .githooks",
 		"publish:jsr": "bunx pkg-to-jsr && bunx jsr publish",
 		"release": "bun lint && bun typecheck && bun build && bumpp",
@@ -51,6 +53,7 @@
 		"eslint": "^9.33.0",
 		"eslint-plugin-format": "^1.0.1",
 		"lint-staged": "^15.0.0",
+		"only-allow": "^1.0.0",
 		"sort-package-json": "^2.0.0",
 		"tsdown": "^0.14.1",
 		"vite": "^6.0.0"
