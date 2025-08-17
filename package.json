@@ -13,21 +13,22 @@
 	],
 	"exports": {
 		".": {
-			"jsr": "./mod.ts",
-			"types": "./mod.ts",
-			"import": "./mod.ts"
-		}
+			"bun": "./index.ts",
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
 	},
-	"main": "./mod.ts",
-	"types": "./mod.ts",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"files": [
 		"dist",
-		"mod.ts"
+		"index.ts"
 	],
 	"scripts": {
-		"build": "tsdown mod.ts --dts --sourcemap --outDir dist",
+		"build": "tsdown",
 		"check": "bun run typecheck",
-		"dev": "bun test --watch mod.ts",
 		"format": "eslint . --fix",
 		"preinstall": "npx only-allow bun",
 		"lint": "eslint .",
@@ -54,8 +55,10 @@
 		"eslint": "^9.33.0",
 		"eslint-plugin-format": "^1.0.1",
 		"lint-staged": "^15.0.0",
+		"publint": "^0.3.12",
 		"sort-package-json": "^2.0.0",
 		"tsdown": "^0.14.1",
+		"unplugin-unused": "^0.5.2",
 		"vite": "^6.0.0"
 	},
 	"lint-staged": {
