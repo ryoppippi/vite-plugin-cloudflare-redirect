@@ -2,6 +2,11 @@
 
 Vite plugin to handle Cloudflare's \_redirects file following https://developers.cloudflare.com/pages/platform/redirects/.
 
+[![npm version](https://img.shields.io/npm/v/@ryoppippi/vite-plugin-cloudflare-redirect)](https://www.npmjs.com/package/@ryoppippi/vite-plugin-cloudflare-redirect)
+[![npm downloads](https://img.shields.io/npm/dm/@ryoppippi/vite-plugin-cloudflare-redirect)](https://www.npmjs.com/package/@ryoppippi/vite-plugin-cloudflare-redirect)
+[![install size](https://packagephobia.com/badge?p=@ryoppippi/vite-plugin-cloudflare-redirect)](https://packagephobia.com/result?p=@ryoppippi/vite-plugin-cloudflare-redirect)
+[![license](https://img.shields.io/npm/l/@ryoppippi/vite-plugin-cloudflare-redirect)](https://github.com/ryoppippi/vite-plugin-cloudflare-redirect/blob/main/LICENSE)
+
 [![JSR](https://jsr.io/badges/@ryoppippi/vite-plugin-cloudflare-redirect)](https://jsr.io/@ryoppippi/vite-plugin-cloudflare-redirect)
 [![JSR](https://jsr.io/badges/@ryoppippi/vite-plugin-cloudflare-redirect/score)](https://jsr.io/@ryoppippi/vite-plugin-cloudflare-redirect)
 
